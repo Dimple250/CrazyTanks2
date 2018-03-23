@@ -8,6 +8,7 @@ const unsigned char SPLAYER = '@';
 const unsigned char SENEMY = 'X';
 const unsigned char SWALL = '#';
 const unsigned char SBREAKWALL = '%';
+const unsigned char SGOLD = '$';
 
 const unsigned char LEVEDATA0[LEVELROWS][LEVELCOLS + 1] = {
 	"##################################################",

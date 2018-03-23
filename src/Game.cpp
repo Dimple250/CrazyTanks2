@@ -12,6 +12,8 @@ Game::Game():isGame_(true),kolKilledTanks(0)
 
 Game::~Game()
 {
+	delete tank_;
+	delete [] objects_;
 }
 
 void Game::init(){
@@ -54,11 +56,24 @@ void Game::init(){
 			case SBREAKWALL: {
 				for (int i = 0; i < 1024; i++) {
 					if (objects_[i] == 0) {
-						objects_[i] = new BreakWall;
+						objects_[i] = new Wall;
 						objects_[i]->setX(c);
 						objects_[i]->setY(r);
 						objects_[i]->setSymbol(symbol);
 						objects_[i]->setObjectType(BreakEallType);
+						break;
+					}
+				}
+				break;
+			}
+			case SGOLD: {
+				for (int i = 0; i < 1024; i++) {
+					if (objects_[i] == 0) {
+						objects_[i] = new Gold;
+						objects_[i]->setX(c);
+						objects_[i]->setY(r);
+						objects_[i]->setSymbol(symbol);
+						objects_[i]->setObjectType(GoldType);
 						break;
 					}
 				}
@@ -102,6 +117,9 @@ void Game::createBullet(int r, int c,GameObject* gameObject) {
 					delete 	objects_[index];
 					objects_[index] = 0;
 				}
+				else {
+
+				}
 			}
 			break;
 		}
@@ -118,7 +136,6 @@ void Game::update() {
 	switch (direction) {
 		//up
 	case 72: {
-		//move(tank_->getY() - 1, tank_->getX());
 		tank_->setDirection(UP);
 		if (conflict(tank_->getY() - 1, tank_->getX()) != false) {
 			gameReder.setGameObject(tank_);
@@ -186,7 +203,6 @@ void Game::update() {
 		break;
 		}
 	}
-	int kol = 0;
 	double r = 0;
 	double c = 0;
 	for (int i = 0; i < 1024; i++) {
@@ -218,8 +234,24 @@ void Game::update() {
 			}
 
 			if (conflict(r, c) != false) {
-				gameReder.setGameObject(objects_[i]);
-				gameReder.update();
+				if (tank_->getX() == c && tank_->getY() == r) {
+					if (static_cast<Bullet*>(objects_[i])->getCreatorType() == EnemyType) {
+						tank_->setHealth(tank_->getHealth() - 1);
+						if (tank_->getHealth() == 0) {
+							isGame_ = 0;
+							isVictory_ = false;
+						}
+						objects_[i]->setSymbol(' ');
+						gameReder.setGameObject(objects_[i]);
+						gameReder.update();
+						delete objects_[i];
+						objects_[i] = 0;
+					}
+				}
+					else {
+						gameReder.setGameObject(objects_[i]);
+						gameReder.update();
+					}
 
 			}
 			else {
@@ -256,78 +288,31 @@ void Game::update() {
 						}
 						}
 					}
-
-					objects_[i]->setSymbol(' ');
-					gameReder.setGameObject(objects_[i]);
-					gameReder.update();
-					delete objects_[i];
-					objects_[i] = 0;
-				}
-			}
-
-			/*if (conflict(r, c) != false) {
-				if (tank_->getX() == c && tank_->getY() == r) {
-					if (static_cast<Bullet*>(objects_[i])->getCreatorType() == EnemyType) {
-						tank_->setHealth(tank_->getHealth() - 1);
-						if (tank_->getHealth() == 0) {
-							isGame_ = 0;
-						}
-						objects_[i]->setSymbol(' ');
-						gameReder.setGameObject(objects_[i]);
-						gameReder.update();
-						delete objects_[i];
-						objects_[i] = 0;
-					}
-				}
-				else {
-
-				gameReder.setGameObject(objects_[i]);
-				gameReder.update();
-			}
-				
-			}
-			else {
-				if (objects_[i]->getObjectType() == BulletType) {
-					if (objects_[getIndexGameObject(r, c)]->getObjectType() == BreakEallType) {
-						int index = getIndexGameObject(r, c);
-						objects_[index]->setSymbol(' ');
-						gameReder.setGameObject(objects_[index]);
-						gameReder.update();
-						delete objects_[index];
-						objects_[index] = 0;
-					}
-					else {
-						if (objects_[getIndexGameObject(r, c)]->getObjectType() == EnemyType) {
+					else
+						if (objects_[getIndexGameObject(r, c)]->getObjectType() == GoldType) {
+							int index = getIndexGameObject(r, c);
 							if (static_cast<Bullet*>(objects_[i])->getCreatorType() == EnemyType) {
-
-							}else
-								if (static_cast<Bullet*>(objects_[i])->getCreatorType() == PlayerType) {
-									objects_[getIndexGameObject(r, c)]->setHealth(objects_[getIndexGameObject(r, c)]->getHealth() - 1);
-
-									if (objects_[getIndexGameObject(r, c)]->getHealth() == 0) {
-										objects_[getIndexGameObject(r, c)]->setSymbol(' ');
-										gameReder.setGameObject(objects_[getIndexGameObject(r, c)]);
-										gameReder.update();
-										delete objects_[getIndexGameObject(r, c)];
-										objects_[getIndexGameObject(r, c)] = 0;
-									}
-								}
+								objects_[index]->setSymbol(' ');
+								gameReder.setGameObject(objects_[index]);
+								gameReder.update();
+								delete objects_[index];
+								objects_[index] = 0;
+								isVictory_ = false;
+								isGame_ = false;
+							}
 						}
-					}
+
 					objects_[i]->setSymbol(' ');
 					gameReder.setGameObject(objects_[i]);
 					gameReder.update();
 					delete objects_[i];
 					objects_[i] = 0;
 				}
-				}*/
-
-			kol++;
+			}
 		}
 
 	}
 	bot();
-	//std::cout << kol;
 }
 
 bool Game::conflict(double r, double c) {

@@ -1,12 +1,11 @@
 #pragma once
-
 #include "GameObject.h"
 
-class BreakWall:public GameObject
+class Gold:public GameObject
 {
 public:
-	BreakWall();
-	~BreakWall();
+	Gold();
+	~Gold();
 	void update();
 };
 

@@ -2,7 +2,13 @@
 #include "GameObject.h"
 
 
-GameObject::GameObject()
+GameObject::GameObject() :
+	x_(0),
+	y_(0),
+	symbol_(' '),
+	direction_(UP),
+	shift_(1),
+	health_(0)
 {
 }
 

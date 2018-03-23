@@ -4,5 +4,6 @@ enum ObjectType {
 	PlayerType,
 	EnemyType,
 	BreakEallType,
-	BulletType
+	BulletType,
+	GoldType
 };

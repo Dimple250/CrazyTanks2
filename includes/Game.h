@@ -3,7 +3,7 @@
 #include "Tank.h"
 #include "Bullet.h"
 #include "Wall.h"
-#include"BreakWall.h"
+#include "Gold.h"
 #include<Windows.h>
 #include "GameObject.h"
 #include "GameRender.h"
@@ -27,7 +27,6 @@ private:
 	void bot();
 	void createBullet(int r, int c,GameObject* gameObject);
 
-	HANDLE console_;
 	bool isGame_;
 	
 	GameObject* tank_;

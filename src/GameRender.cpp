@@ -12,6 +12,7 @@ GameRender::GameRender()
 
 GameRender::~GameRender()
 {
+	delete gameObject_;
 }
 
 void GameRender::setGameObject(GameObject* gameObject) {
